@@ -41,15 +41,6 @@ def main():
         print('Invalid format. Give amount in cents, or date in mm/dd or yy/mm/dd format')
         sys.exit()
 
-# For troubleshooting - displays formatted json data
-def print_transactions(): 
-    transactions_url='https://api.privacy.com/v1/transaction?begin=2020-01-01&page_size=1000' # Only the first 1000 transactions
-    response = requests.get(transactions_url, headers={'Authorization':f'api-key {apikey}'})
-    response.raise_for_status()
-    # print(response.text)
-    # load json to python variable
-    pprint.pprint(json.loads(response.text))
-    sys.exit()
 # Downloads transaction history using Privacy.com's API
 def download_transactions():
     transactions_url='https://api.privacy.com/v1/transaction?&page_size=1000'  # Only the first 1000 transactions
@@ -116,4 +107,14 @@ def search_by_amount(amount):
                 print(f'The card used is named: {card_name}')
                 print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
 
+# For troubleshooting - displays formatted json data
+def print_transactions(): 
+    transactions_url='https://api.privacy.com/v1/transaction?begin=2020-01-01&page_size=1000' # Only the first 1000 transactions
+    response = requests.get(transactions_url, headers={'Authorization':f'api-key {apikey}'})
+    response.raise_for_status()
+    # print(response.text)
+    # load json to python variable
+    pprint.pprint(json.loads(response.text))
+    sys.exit()
+    
 main()
