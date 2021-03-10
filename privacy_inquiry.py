@@ -9,17 +9,20 @@ apikey = os.environ.get('API_KEY')
 
 def main():
     if len(sys.argv) < 2:
-        print('include transaction amount in cents, or date ([yyyy/]mm/dd) as an argument')
+        print('Usage: Include transaction amount in cents, or date ([yyyy/]mm/dd) as an argument')
         sys.exit()
          
         # For troublshooting:
         # print_transactions() 
 
-    # Distinguish whether date or amount were provided in CL argument 
-    if sys.argv[1].isnumeric() or (sys.argv[1][0] == '-' and sys.argv[1][1:].isnumeric()): #if purely numeric argument, search for tranasctions with this amount
+    # Distinguish whether date or amount were provided in CL argument:
+    # If purely numeric argument(positive or negative), search for tranasctions with this amount.
+    if sys.argv[1].isnumeric() or (sys.argv[1][0] == '-' and sys.argv[1][1:].isnumeric()): 
         search_by_amount(int(sys.argv[1]))
 
-    elif '/' in sys.argv[1]:
+# TODO: Update date format everywhere to ISO 8601. 
+    # If '/' is included, search for transactions with this date.
+    elif '/' in sys.argv[1]: 
         if sys.argv[1].count('/') == 1:
             date = str(datetime.date.today().year) + '/' + sys.argv[1]
         elif sys.argv[1].count('/') == 2:
@@ -38,18 +41,34 @@ def main():
             list_transactions(1000)
         sys.exit()
     else: 
-        print('Invalid format. Give amount in cents, or date in mm/dd or yy/mm/dd format')
+        print('Invalid format. Give amount in cents, or date in mm/dd or yyyy/mm/dd format')
         sys.exit()
 
-# Downloads transaction history using Privacy.com's API
 def download_transactions():
+    '''
+    Downloads transaction history using Privacy.com's API.
+
+    Parameters:
+        None
+
+    Returns:
+        dict: downloaded transaction data
+    '''
     transactions_url='https://api.privacy.com/v1/transaction?&page_size=1000'  # Only the first 1000 transactions
     response = requests.get(transactions_url, headers={'Authorization':f'api-key {apikey}'})
     response.raise_for_status()
     return json.loads(response.text)
 
-# Prints tabulated list of the passed number of most recent transactions 
 def list_transactions(num_to_show):
+    '''
+    Prints tabulated list of the passed number of most recent transactions.
+
+    Parameters:
+        num_to_show (int): Integer representing the number of transictions to print
+
+    Returns:
+        None
+    '''
     transaction_data = download_transactions()
     results = [['Vendor', 'Amount', 'Date']]
     if len(transaction_data['data']) < num_to_show:
@@ -58,10 +77,19 @@ def list_transactions(num_to_show):
         results.append([f'{transaction["merchant"]["descriptor"]}', f'${transaction["amount"]/100}', f'{transaction["created"][:10]}'])
     print (tabulate(results))
 
-# Searches downloaded data for transactions made on passed date
 def search_by_date(transaction_date):
-    transaction_data = download_transactions()    
-    for transaction in transaction_data['data']: #Iterates over 'data', whos value is a list of dictionaries, each of which is a transaction
+    '''
+    Searches downloaded data for transactions made on passed date.
+
+    Parameters:
+        transaction_date (str): Date of transactions to return. Format: 'yyyy-mm-dd'
+
+    Returns:
+        None
+    '''
+    transaction_data = download_transactions()   
+    # Iterate over 'data', whos value is a list of dictionaries, each of which is a transaction
+    for transaction in transaction_data['data']: 
         if str(transaction['created'])[:10] == transaction_date:
             merch_descriptor = transaction['merchant']['descriptor']
             dollar_amount = transaction['amount']/100
@@ -82,10 +110,16 @@ def search_by_date(transaction_date):
                 print(f'The card used is named: {card_name}')
                 print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
 
-# Searches downloaded data for transactions of passed amount
 def search_by_amount(amount):
+    '''
+    Searches downloaded data for transactions of passed amount.
+
+    Parameters:
+
+    Returns:
+        None
+    '''
     transaction_data = download_transactions()    
-    # Search by amount:
     for transaction in transaction_data['data']:
         if transaction['amount'] == amount:
             merch_descriptor = transaction['merchant']['descriptor']
@@ -107,8 +141,15 @@ def search_by_amount(amount):
                 print(f'The card used is named: {card_name}')
                 print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
 
-# For troubleshooting - displays formatted json data
+# TODO: Tidy up search_by_x functions. Can I make this code more DRY?
+# I think my problem here is running two similar codes that are slightly different. 
+# FYI: Can pass function in function arguments: somefunc(amount, func=search_by_amount) \
+#   func(amount)
+# This might help? It's usefull for running two separate funcs from the same main code.
+
 def print_transactions(): 
+    '''For troubleshooting - downloads and displays formatted json data of transactions.'''
+
     transactions_url='https://api.privacy.com/v1/transaction?begin=2020-01-01&page_size=1000' # Only the first 1000 transactions
     response = requests.get(transactions_url, headers={'Authorization':f'api-key {apikey}'})
     response.raise_for_status()
