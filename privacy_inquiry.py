@@ -10,7 +10,7 @@ apikey = os.environ.get('API_KEY')
 # TODO: allow for searching by merchant name
 def main():
     if len(sys.argv) < 2:
-        print('Usage: Include transaction amount in cents, or date ([yyyy/]mm/dd) as an argument')
+        print('Usage: Include transaction amount in cents, or date ([yyyy-]mm-dd) as an argument')
         sys.exit()
          
         # For troublshooting:
@@ -21,7 +21,6 @@ def main():
     if sys.argv[1].isnumeric() or (sys.argv[1][0] == '-' and sys.argv[1][1:].isnumeric()): 
         search_by_amount(int(sys.argv[1]))
 
-# TODO: Update date format everywhere to ISO 8601. 
     # If '/' is included, search for transactions with this date.
     elif '-' in sys.argv[1] and sys.argv[1][0] != '-': # Dash exists, but not as a negative number
         if sys.argv[1].count('-') == 1:
@@ -31,9 +30,8 @@ def main():
         else:
             print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
             sys.exit()
-        # datetime_object = datetime.datetime.strptime(date, '%Y/%m/%d')
-        # search_by_date(str(datetime_object.strftime('%Y-%m-%d')))
         search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
+    # TODO: fix this returning errors if arbitrary numbers with dashes is passed. (e.g., 4-126)
 
     # List some or all recent transactions
     elif 'ls' in sys.argv[1]:
@@ -43,7 +41,7 @@ def main():
             list_transactions(1000)
         sys.exit()
     else: 
-        print('Invalid format. Give amount in cents, or date in mm/dd or yyyy/mm/dd format')
+        print('Invalid format. Give amount in cents, or date in [yyyy]-mm-dd format')
         sys.exit()
 
 def download_transactions():
