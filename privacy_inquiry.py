@@ -7,6 +7,7 @@ from tabulate import tabulate
 
 apikey = os.environ.get('API_KEY')
 
+# TODO: allow for searching by merchant name
 def main():
     if len(sys.argv) < 2:
         print('Usage: Include transaction amount in cents, or date ([yyyy/]mm/dd) as an argument')
@@ -22,16 +23,17 @@ def main():
 
 # TODO: Update date format everywhere to ISO 8601. 
     # If '/' is included, search for transactions with this date.
-    elif '/' in sys.argv[1]: 
-        if sys.argv[1].count('/') == 1:
-            date = str(datetime.date.today().year) + '/' + sys.argv[1]
-        elif sys.argv[1].count('/') == 2:
+    elif '-' in sys.argv[1] and sys.argv[1][0] != '-': # Dash exists, but not as a negative number
+        if sys.argv[1].count('-') == 1:
+            date = str(datetime.date.today().year) + '-' + sys.argv[1] # If year is omitted, use this year
+        elif sys.argv[1].count('-') == 2:
             date = sys.argv[1]
         else:
-            print('Invalid format. Give amount in cents, or date in mm/dd or yyyy/mm/dd format')
+            print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
             sys.exit()
-        datetime_object = datetime.datetime.strptime(date, '%Y/%m/%d')
-        search_by_date(str(datetime_object.strftime('%Y-%m-%d')))
+        # datetime_object = datetime.datetime.strptime(date, '%Y/%m/%d')
+        # search_by_date(str(datetime_object.strftime('%Y-%m-%d')))
+        search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
 
     # List some or all recent transactions
     elif 'ls' in sys.argv[1]:
