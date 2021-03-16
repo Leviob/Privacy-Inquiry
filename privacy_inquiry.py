@@ -66,7 +66,7 @@ def list_transactions(num_to_show):
     Prints tabulated list of the passed number of most recent transactions.
 
     Parameters:
-        num_to_show (int): Integer representing the number of transictions to print
+        num_to_show (int): The number of transictions to print
 
     Returns:
         None
@@ -84,7 +84,7 @@ def search_by_date(transaction_date):
     Searches downloaded data for transactions made on passed date.
 
     Parameters:
-        transaction_date (str): Date of transactions to return. Format: 'yyyy-mm-dd'
+        transaction_date (str): The date of transactions to return. Format: 'yyyy-mm-dd'
 
     Returns:
         None
@@ -117,6 +117,7 @@ def search_by_amount(amount):
     Searches downloaded data for transactions of passed amount.
 
     Parameters:
+        amount (int): The amount in cents of transactions to return.
 
     Returns:
         None
