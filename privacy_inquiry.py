@@ -21,7 +21,7 @@ def main():
     if sys.argv[1].isnumeric() or (sys.argv[1][0] == '-' and sys.argv[1][1:].isnumeric()): 
         search_by_amount(int(sys.argv[1]))
 
-    # If '/' is included, search for transactions with this date.
+    # If argument is formatted like a date, search for transactions with this date.
     elif '-' in sys.argv[1] and sys.argv[1][0] != '-': # Dash exists, but not as a negative number
         if sys.argv[1].count('-') == 1:
             date = str(datetime.date.today().year) + '-' + sys.argv[1] # If year is omitted, use this year
@@ -30,7 +30,11 @@ def main():
         else:
             print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
             sys.exit()
-        search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
+        try:
+            search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
+        except ValueError:
+            print('That isn\'t a correct date format.')
+
     # TODO: fix this returning errors if arbitrary numbers with dashes is passed. (e.g., 4-126)
 
     # List some or all recent transactions
