@@ -32,10 +32,8 @@ def main():
             sys.exit()
         try:
             search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
-        except ValueError:
+        except ValueError: # triggered by non-date inputs, e.g. 55-43
             print('That isn\'t a correct date format.')
-
-    # TODO: fix this returning errors if arbitrary numbers with dashes is passed. (e.g., 4-126)
 
     # List some or all recent transactions
     elif 'ls' in sys.argv[1]:
