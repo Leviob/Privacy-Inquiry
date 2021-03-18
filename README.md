@@ -1,7 +1,7 @@
 # Privacy-Inquiry
 CLI program for searching spending history through Privacy.com.
 
-[Privacy](www.privacy.com) is a service that allows online purchases to be made without your bank knowing what merchant you are shopping at, and without the merchant knowing your true name, credit card number, or address. A side effect of this privacy enhancing service is that my bank statements show dates and amounts, but do not show which store a transaction took place. This program implements the Privacy API and allows me to quickly search through all my transactions made through Privacy and return useful information. 
+[Privacy](https://www.privacy.com) is a service that allows online purchases to be made without your bank knowing what merchant you are shopping at, and without the merchant knowing your true name, credit card number, or address. A side effect of this privacy enhancing service is that my bank statements show dates and amounts, but do not show which store a transaction took place. This program implements the Privacy API and allows me to quickly search through all my transactions made through Privacy and return useful information. 
 
 ## Usage
 Transactions can be searched by date or transaction amount, or simply listed. Command line arguments ditate what results are returned. 
