@@ -24,7 +24,9 @@ def main():
     # If argument is formatted like a date, search for transactions with this date.
     elif '-' in sys.argv[1] and sys.argv[1][0] != '-': # Dash exists, but not as a negative number
         if sys.argv[1].count('-') == 1:
-            date = str(datetime.date.today().year) + '-' + sys.argv[1] # If year is omitted, use this year
+            date = str(datetime.date.today().year) + '-' + sys.argv[1] # If year is omitted, use current year
+            # TODO: if year is omitted and date is in the future, use previous year
+
         elif sys.argv[1].count('-') == 2:
             date = sys.argv[1]
         else:
