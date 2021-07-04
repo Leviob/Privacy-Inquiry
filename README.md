@@ -21,7 +21,10 @@ Passing an integer will initiate a search for all transactions of that amount in
     CHICK-FIL-A #02855 was paid $11.76 on October 1, 2019
 
 ### Search by Merchant
-Comming soon.
+Passing a string (other than 'ls') will initiate a search for all transactions made with merchants whos descriptor includes the passed string. 
+
+    $ ./privacy_inquiry.py moss
+    MOSS MOTORS was paid $57.33 on March 03, 2021
 
 ### List Transactions
 Passing the `ls` argument will list all available transactions (up to the most recent 1000 transactions). Including a number after `ls` will show that many of the most recent transactions. 
