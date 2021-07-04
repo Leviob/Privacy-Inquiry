@@ -93,25 +93,8 @@ def search_by_date(transaction_date):
     # Iterate over 'data', whos value is a list of dictionaries, each of which is a transaction
     for transaction in transaction_data['data']: 
         if str(transaction['created'])[:10] == transaction_date:
-            merch_descriptor = transaction['merchant']['descriptor']
-            dollar_amount = transaction['amount']/100
-            datetime_object = datetime.datetime.strptime(transaction["created"], '%Y-%m-%dT%H:%M:%SZ')
-            date_long = datetime_object.strftime('%B %d, %Y')
-    
-            # Return matching dates and amounts
-            print(f'{merch_descriptor} was paid ${dollar_amount} on {date_long}')
+            print_results(transaction)
             
-            # Return more information if requested
-            if len(sys.argv) > 2 and (sys.argv[2].lower() == 'more' or sys.argv[2].lower() == 'm'):
-                trans_status = transaction['status']
-                trans_result = transaction['result']
-                card_name = transaction['card']['memo']
-                merch_city = transaction['merchant']['city']
-                merch_state = transaction['merchant']['state']
-                print(f'This transaction is {trans_result} and {trans_status}')
-                print(f'The card used is named: {card_name}')
-                print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
-
 def search_by_amount(amount):
     '''
     Searches downloaded data for transactions of passed amount.
@@ -125,30 +108,36 @@ def search_by_amount(amount):
     transaction_data = download_transactions()    
     for transaction in transaction_data['data']:
         if transaction['amount'] == amount:
-            merch_descriptor = transaction['merchant']['descriptor']
-            dollar_amount = transaction['amount']/100
-            datetime_object = datetime.datetime.strptime(transaction["created"], '%Y-%m-%dT%H:%M:%SZ')
-            date_long = datetime_object.strftime('%B %d, %Y')
-    
-            # Return matching dates and amounts
-            print(f'{merch_descriptor} was paid ${dollar_amount} on {date_long}')
-                
-            # Return more information if requested
-            if len(sys.argv) > 2 and (sys.argv[2].lower() == 'more' or sys.argv[2].lower() == 'm'):
-                trans_status = transaction['status']
-                trans_result = transaction['result']
-                card_name = transaction['card']['memo']
-                merch_city = transaction['merchant']['city']
-                merch_state = transaction['merchant']['state']
-                print(f'This transaction is {trans_result} and {trans_status}')
-                print(f'The card used is named: {card_name}')
-                print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
+            print_results(transaction)
 
-# TODO: Tidy up search_by_x functions. Can I make this code more DRY?
-# I think my problem here is running two similar codes that are slightly different. 
-# FYI: Can pass function in function arguments: somefunc(amount, func=search_by_amount) \
-#   func(amount)
-# This might help? It's usefull for running two separate funcs from the same main code.
+def print_results(transaction):
+    '''
+    Prints information of transactions.
+
+    Parameters:
+        transaction (dict): Dictionary of transaction details.
+
+    Returns:
+        None    
+    '''
+    merch_descriptor = transaction['merchant']['descriptor']
+    dollar_amount = transaction['amount']/100
+    datetime_object = datetime.datetime.strptime(transaction["created"], '%Y-%m-%dT%H:%M:%SZ')
+    date_long = datetime_object.strftime('%B %d, %Y')
+
+    # Return matching dates and amounts
+    print(f'{merch_descriptor} was paid ${dollar_amount} on {date_long}')
+        
+    # Return more information if requested
+    if len(sys.argv) > 2 and (sys.argv[2].lower() == 'more' or sys.argv[2].lower() == 'm'):
+        trans_status = transaction['status']
+        trans_result = transaction['result']
+        card_name = transaction['card']['memo']
+        merch_city = transaction['merchant']['city']
+        merch_state = transaction['merchant']['state']
+        print(f'This transaction is {trans_result} and {trans_status}')
+        print(f'The card used is named: {card_name}')
+        print(f'{merch_descriptor} is located in {merch_city}, {merch_state}\n')
 
 def print_transactions(): 
     '''For troubleshooting - downloads and displays formatted json data of transactions.'''
