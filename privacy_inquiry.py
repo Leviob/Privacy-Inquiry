@@ -10,7 +10,7 @@ apikey = os.environ.get('API_KEY')
 # TODO: allow for searching by merchant name
 def main():
     if len(sys.argv) < 2:
-        print('Usage: Include transaction amount in cents, or date ([yyyy-]mm-dd) as an argument')
+        print('Usage: Include transaction amount in cents, or date ([yyyy-]mm-dd), or merchant name as an argument')
         sys.exit()
          
         # For troublshooting:
@@ -34,9 +34,11 @@ def main():
             search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
         except ValueError: # triggered by non-date inputs, e.g. 55-43
             print('That isn\'t a correct date format.')
+    elif sys.argv[1].isalpha():
+        search_by_merchant(sys.argv[1])
 
     # List some or all recent transactions
-    elif 'ls' in sys.argv[1]:
+    elif 'ls' == sys.argv[1]:
         if len(sys.argv) > 2 and sys.argv[2].isnumeric():
             list_transactions(int(sys.argv[2]))
         else:
@@ -108,6 +110,21 @@ def search_by_amount(amount):
     transaction_data = download_transactions()    
     for transaction in transaction_data['data']:
         if transaction['amount'] == amount:
+            print_results(transaction)
+
+def search_by_merchant(merchant):
+    '''
+    Searches downloaded data for transactions of passed amount.
+
+    Parameters:
+        merchant (str): The merchant descriptor of transactions to return.
+
+    Returns:
+        None
+    '''
+    transaction_data = download_transactions()    
+    for transaction in transaction_data['data']:
+        if merchant in transaction['merchant']['descriptor'].lower():
             print_results(transaction)
 
 def print_results(transaction):
