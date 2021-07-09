@@ -8,9 +8,9 @@ Transactions can be searched by date or transaction amount, or simply listed. Co
 An API key from Privacy.com is required for this script to function. The `apikey` variable can be modified to equal the API key. 
 
 ### Search by Date
-Passing a date will initiate a search for all transactions made on that date. The date argument can be formatted as yyyy-mm-dd, or mm-dd. Omitting the year will search for the day and month of the current year. Single digit days and months are also accepted. For example:
+Passing a date will initiate a search for all transactions made on that date. The date argument can be formatted as yyyy-m-d, or m-d. Omitting the year will search for most recent corresponding day and month(current year, or previous year). Single digit days and months are also accepted. For example:
 
-    $ ./privacy_inquiry.py 2020-04-11
+    $ ./privacy_inquiry.py 2020-4-11
     CHIPOTLE ONLINE was paid $8.53 on April 11, 2020
 
 ### Search by Amount
