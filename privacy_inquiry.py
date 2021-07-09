@@ -7,10 +7,9 @@ from tabulate import tabulate
 
 apikey = os.environ.get('API_KEY')
 
-# TODO: allow for searching by merchant name
 def main():
     if len(sys.argv) < 2:
-        print('Usage: Include transaction amount in cents, or date ([yyyy-]mm-dd), or merchant name as an argument')
+        print('Usage: Include transaction amount in cents, or date ([yyyy-]m-d), or merchant name as an argument')
         sys.exit()
          
         # For troublshooting:
@@ -23,19 +22,31 @@ def main():
 
     # If argument is formatted like a date, search for transactions with this date.
     elif '-' in sys.argv[1] and sys.argv[1][0] != '-': # Dash exists, but not as a negative number
+
+        # If only month and day given (e.g. 1-20), assume current year
         if sys.argv[1].count('-') == 1:
-            date = str(datetime.date.today().year) + '-' + sys.argv[1] # If year is omitted, use current year
-            # TODO: if year is omitted and date is in the future, use previous year
+            today = datetime.datetime.today()
+            try:
+                date = datetime.datetime.strptime(str(today.year) + '-' + sys.argv[1], '%Y-%m-%d') 
+            except ValueError:
+                print('That isn\'t a correct date format.') # Triggered by non-date inputs, e.g. 55-43
+                sys.exit()
+            # If month and day is in the future, use previous year
+            if today < date:
+                date = date.replace(year=(today.year - 1))
+
 
         elif sys.argv[1].count('-') == 2:
-            date = sys.argv[1]
+            try:
+                date = datetime.datetime.strptime(sys.argv[1], '%Y-%m-%d')
+            except ValueError:
+                print('That isn\'t a correct date format.') # Triggered by non-date inputs with 2 hyphens, e.g. 55-43-1612
+                sys.exit()
         else:
-            print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
+            print('Invalid format. Give amount in cents, or date in [yyyy-]m-d format')
             sys.exit()
-        try:
-            search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
-        except ValueError: # triggered by non-date inputs, e.g. 55-43
-            print('That isn\'t a correct date format.')
+
+        search_by_date(date.strftime('%Y-%m-%d')) 
     elif sys.argv[1].isalpha() and sys.argv[1] != 'ls':
         search_by_merchant(sys.argv[1])
 
@@ -47,7 +58,7 @@ def main():
             list_transactions(1000)
         sys.exit()
     else: 
-        print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
+        print('Invalid format. Give amount in cents, or date in [yyyy-]m-d format')
         sys.exit()
 
 def download_transactions():
