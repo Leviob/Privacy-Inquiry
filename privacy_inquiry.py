@@ -36,18 +36,18 @@ def main():
             search_by_date(str(datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d'))) # Allows for single digit months and days in CL arguments
         except ValueError: # triggered by non-date inputs, e.g. 55-43
             print('That isn\'t a correct date format.')
-    elif sys.argv[1].isalpha():
+    elif sys.argv[1].isalpha() and sys.argv[1] != 'ls':
         search_by_merchant(sys.argv[1])
 
     # List some or all recent transactions
-    elif 'ls' == sys.argv[1]:
+    elif sys.argv[1] == 'ls':
         if len(sys.argv) > 2 and sys.argv[2].isnumeric():
             list_transactions(int(sys.argv[2]))
         else:
             list_transactions(1000)
         sys.exit()
     else: 
-        print('Invalid format. Give amount in cents, or date in [yyyy]-mm-dd format')
+        print('Invalid format. Give amount in cents, or date in [yyyy-]mm-dd format')
         sys.exit()
 
 def download_transactions():
